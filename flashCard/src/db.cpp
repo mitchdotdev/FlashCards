@@ -48,7 +48,7 @@ bool DBManager::createTables() {
 
 void DBManager::createSet() {
 	std::string query = "INSERT INTO `Set` "
-						"VALUES (\"rock\", \"big\", 1)";
+						"VALUES (\"butt\", \"big\", 1)";
 
 	sqlite3_exec(database, query.c_str(), NULL, NULL, NULL);
 }

@@ -1,31 +1,8 @@
 #include "../header/main.h"
 
 int main() {
-	int choice;
-	bool exit = false;
-
 	init();
-
-	while(!exit) {
-		choice = menu(MAIN_MENU);
-		switch(choice) {
-		case 0:
-			std::cout << "bye";
-			exit = true;
-			break;
-		case 1:
-			choice = menu(SUB_MENU1);
-			DBManager::instance().displayAllSets();
-			exit = true;
-			break;
-		case 2:
-			DBManager::instance().createSet();
-			exit = true;
-			break;
-
-		}
-
-	}
+	menuController();
 
 	return 0;
 }
@@ -59,6 +36,7 @@ void menuController() {
 			exit = true;
 			break;
 		case 2:
+			DBManager::instance().createSet();
 			exit = true;
 			break;
 
