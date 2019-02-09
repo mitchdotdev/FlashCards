@@ -1,4 +1,4 @@
-#include "../header/db.h"
+ #include "../header/db.h"
 
 DBManager::DBManager() {
 	if(openDatabase())

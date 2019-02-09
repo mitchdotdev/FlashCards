@@ -2,9 +2,10 @@
 #define HANDLERS_H_
 
 #include "db.h"
-#include "menu.h"
+#include "set.h"
 
 void init();
 void menuController();
+int validateInput(int);
 
 #endif /* HANDLERS_H_ */
