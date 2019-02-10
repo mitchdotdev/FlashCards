@@ -19,6 +19,7 @@ class DBManager {
 	static int setCallback(void*, int, char**, char**);
 public:
 	static DBManager& instance();
+	int dbSelect(std::string, int);
 	void createSet();
 	void displayAllSets();
 	void displaySet(std::string);

@@ -46,6 +46,40 @@ bool DBManager::createTables() {
 	return success;
 }
 
+int DBManager::dbSelect(std::string query, int choice) {
+	query = query + std::to_string(choice);
+
+    sqlite3_stmt *stmt;
+    int result;
+
+    int rc = sqlite3_prepare_v2(database, query.c_str(), -1, &stmt, NULL);
+    if (rc != SQLITE_OK) {
+        printf("error: %s\n", sqlite3_errmsg(database));
+        // or throw an exception
+        return -1;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
+        printf("error: %s\n", sqlite3_errmsg(database));
+        // or throw an exception
+        sqlite3_finalize(stmt);
+        return -1;
+    }
+
+    if (rc == SQLITE_DONE) // no result
+        result = -1;
+    else if (sqlite3_column_type(stmt, 0) == SQLITE_NULL) // result is NULL
+        result = -1;
+    else { // some valid result
+        result = sqlite3_column_int(stmt, 0);
+    }
+
+    sqlite3_finalize(stmt);
+
+    return result;
+}
+
 void DBManager::createSet() {
 	std::string query = "INSERT INTO `Set` "
 						"VALUES (\"butt\", \"big\", 1)";
