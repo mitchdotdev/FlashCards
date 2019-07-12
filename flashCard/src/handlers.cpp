@@ -40,18 +40,16 @@ void menuController() {
 			break;
 
 		}
-
 	}
-
 }
 
 int menuInput(int numOfChoices) {
 	bool exit = false;
 	int choice;
 
-	std::cin >> choice;
 	while(!exit) {
-		if(std::cin.fail() || choice < 0 || choice > numOfChoices ) {
+		std::cin >> choice;
+		if(std::cin.fail() || choice < 0 || choice >= numOfChoices) {
 			std::cin.clear();
 			std::cin.ignore(100, '\n');
 			std::cout << "ERROR . . . Please only enter one of the choice displayed\n: ";
