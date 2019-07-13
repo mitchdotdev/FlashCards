@@ -6,8 +6,11 @@
 #include <sqlite3.h>
 
 class DBManager {
+	// sqlite3 database object
 	sqlite3* database;
+	// Constructor
 	DBManager();
+	// Destructor
 	~DBManager();
 
 	/* Initializer methods */
@@ -18,11 +21,28 @@ class DBManager {
 	static int setManagerCallback(void*, int, char**, char**);
 	static int setCallback(void*, int, char**, char**);
 public:
+	/*
+	 * Creates static instance of database
+	 */
 	static DBManager& instance();
+	/*
+	 * Selects the correct database entry
+	 */
 	int dbSelect(std::string, int);
+	/*
+	 * Creates a new flashcard set
+	 */
 	void createSet(std::string);
+	/*
+	 * Displays a list of all flashcard sets
+	 */
 	void displayAllSets();
+	/*
+	 * Displays the contents of a flashcard set
+	 */
 	void displaySet(std::string);
+
+	/* Delete copy constructor and assignment operator */
 	DBManager(const DBManager&) = delete;
 	void operator =(const DBManager&) = delete;
 };

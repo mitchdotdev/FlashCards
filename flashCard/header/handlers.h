@@ -6,9 +6,21 @@
 #include "db.h"
 #include "set.h"
 
+/*
+ * Outputs application title and initializes a single instance of the DBManager
+ */
 void init();
+/*
+ * Outputs application menus and delegates user input
+ */
 void menuController();
+/*
+ * Error checks and validates user input
+ */
 int menuInput(int);
+/*
+ * Error checks and validates user input for the database and delegates queries
+ */
 int dbInput(int);
 
 #endif /* HANDLERS_H_ */

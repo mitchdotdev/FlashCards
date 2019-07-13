@@ -1,16 +1,21 @@
  #include "../header/db.h"
 
+// Constructor
 DBManager::DBManager() {
+	// If database successfully opens, create base tables
 	if(openDatabase())
 		createTables();
 }
 
+// Destructor
 DBManager::~DBManager() { sqlite3_close(database); }
 
 bool DBManager::openDatabase() {
 	bool success;
+	// If database opens unsuccessfully return false
 	if(sqlite3_open("tst.db", &database))
 		success = false;
+	// Else return true
 	else
 		success = true;
 
@@ -22,24 +27,27 @@ bool DBManager::createTables() {
 	int exec1;
 	int exec2;
 
-	/* Creating table to hold the name and id of all of the sets of flashcards */
+	// Creating table to hold the name and id of all of the sets of flashcards
 	std::string sql1 = "CREATE TABLE `Set_Manager` ("
-					   "`ID`	INTEGER, "
+					   "`ID`	INTEGER AUTOINCREMENT, "
 					   "`Name`	TEXT UNIQUE, "
 					   "PRIMARY KEY(`ID`) )";
 
-	/* Creating table to hold the flashcards that reference the id of the set they belong to */
+	// Creating table to hold the flashcards that reference the id of the set they belong to
 	std::string sql2 = "CREATE TABLE `Set` ("
 					   "`word`	TEXT, "
 					   "`definition`	TEXT, "
 					   "`setID`	INTEGER, "
 					   "FOREIGN KEY(`setID`) REFERENCES `Set_Manager`(`ID`) )";
 
+	/* Execute both table queries */
 	exec1 = sqlite3_exec(database, sql1.c_str(), NULL, NULL, NULL);
 	exec2 = sqlite3_exec(database, sql2.c_str(), NULL, NULL, NULL);
 
+	// If queries executed successfully return true
 	if( (exec1 == SQLITE_OK || exec1 == 1) && (exec2 == SQLITE_OK || exec2 == 1) )
 		success = true;
+	// Else return false
 	else
 		success = false;
 
@@ -81,9 +89,11 @@ int DBManager::dbSelect(std::string query, int choice) {
 }
 
 void DBManager::createSet(std::string setName) {
+	// Construct query
 	std::string query = "INSERT INTO `Set_Manager` (`Name`) "
 						"VALUES (\'" + setName + "\')";
 
+	// Execute query
 	sqlite3_exec(database, query.c_str(), NULL, NULL, NULL);
 }
 
@@ -106,9 +116,9 @@ int DBManager::setCallback(void* data, int argc, char** argv, char** colName) {
 }
 
 void DBManager::displayAllSets() {
-	std::string choice;
 	std::string query = "SELECT * FROM `Set_Manager` ORDER BY `ID`";
 
+	/* Execute query and display results via callback function */
 	std::cout << std::setw(7) << std::left << "\nID" << "Set Name\n______________\n";
 	sqlite3_exec(database, query.c_str(), setManagerCallback, NULL, NULL);
 
@@ -116,11 +126,14 @@ void DBManager::displayAllSets() {
 
 void DBManager::displaySet(std::string choice) {
 	std::string query = "SELECT `word`, `definition` FROM `Set` WHERE `setID` = " + choice + " ORDER BY `word`";
+
+	/* Execute query and display results via callback function */
 	std::cout << std::setw(13) << std::left << "\nWord" << "Definition\n________________________\n";
 	sqlite3_exec(database, query.c_str(), setCallback, NULL, NULL);
 }
 
 DBManager& DBManager::instance() {
+	// Instantiate and return static database object
 	static DBManager DB;
 	return DB;
 }
