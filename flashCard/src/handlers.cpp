@@ -21,10 +21,12 @@ void menuController() {
 
 	while(!exit) {
 		switch(choice) {
+		// case 0 exits the program
 		case 0:
 			std::cout << "bye";
 			exit = true;
 			break;
+		// case 1 displays the list of available sets to view, upon selection will display the selected set
 		case 1:
 			DBManager::instance().displayAllSets();
 			std::cout << "\nEnter the ID# of the set you\'d like to view: ";
@@ -34,8 +36,14 @@ void menuController() {
 				std::cout << "It don\'t exist bruv\n\n";
 			exit = true;
 			break;
+		// case 2 will create a new set
 		case 2:
-			DBManager::instance().createSet();
+			std::string setName;
+			std::cout << "Enter the name of the new set: ";
+			std::cin.clear();
+			std::cin.ignore(100, '\n');
+			std::getline(std::cin, setName);
+			DBManager::instance().createSet(setName);
 			exit = true;
 			break;
 
@@ -64,8 +72,9 @@ int dbInput(int queryType) {
 	int choice;
 	bool exit = false;
 
-	std::cin >> choice;
+	//std::cin >> choice;
 	while(!exit) {
+		std::cin >> choice;
 		if(std::cin.fail() || choice < 0) {
 			std::cin.clear();
 			std::cin.ignore(100, '\n');

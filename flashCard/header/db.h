@@ -20,7 +20,7 @@ class DBManager {
 public:
 	static DBManager& instance();
 	int dbSelect(std::string, int);
-	void createSet();
+	void createSet(std::string);
 	void displayAllSets();
 	void displaySet(std::string);
 	DBManager(const DBManager&) = delete;

@@ -80,9 +80,9 @@ int DBManager::dbSelect(std::string query, int choice) {
     return result;
 }
 
-void DBManager::createSet() {
-	std::string query = "INSERT INTO `Set` "
-						"VALUES (\"butt\", \"big\", 1)";
+void DBManager::createSet(std::string setName) {
+	std::string query = "INSERT INTO `Set_Manager` (`Name`) "
+						"VALUES (\'" + setName + "\')";
 
 	sqlite3_exec(database, query.c_str(), NULL, NULL, NULL);
 }
@@ -90,7 +90,7 @@ void DBManager::createSet() {
 int DBManager::setManagerCallback(void* data, int argc, char** argv, char** colName) {
 
 	for(int i = 0; i < argc; ++i)
-		std::cout << std::setw(7) << std::left << ("%s", argv[i] ? argv[i] : "NULL");
+		std::cout << std::setw(6) << std::left << (argv[i] ? argv[i] : "NULL");
 
 	std::cout << '\n';
 	return 0;
@@ -99,7 +99,7 @@ int DBManager::setManagerCallback(void* data, int argc, char** argv, char** colN
 int DBManager::setCallback(void* data, int argc, char** argv, char** colName) {
 
 	for(int i = 0; i < argc; ++i)
-		std::cout << std::setw(12) << std::left << ("%s", argv[i] ? argv[i] : "NULL");
+		std::cout << std::setw(12) << std::left << (argv[i] ? argv[i] : "NULL");
 
 	std::cout << '\n';
 	return 0;
@@ -116,7 +116,7 @@ void DBManager::displayAllSets() {
 
 void DBManager::displaySet(std::string choice) {
 	std::string query = "SELECT `word`, `definition` FROM `Set` WHERE `setID` = " + choice + " ORDER BY `word`";
-	std::cout << std::setw(12) << std::left << "\nWord" << "Definition\n________________________\n";
+	std::cout << std::setw(13) << std::left << "\nWord" << "Definition\n________________________\n";
 	sqlite3_exec(database, query.c_str(), setCallback, NULL, NULL);
 }
 
