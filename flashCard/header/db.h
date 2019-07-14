@@ -13,6 +13,9 @@ class DBManager {
 	// Destructor
 	~DBManager();
 
+	// Current set ID
+	int stateID;
+
 	/* Initializer methods */
 	bool openDatabase();
 	bool createTables();
@@ -26,13 +29,29 @@ public:
 	 */
 	static DBManager& instance();
 	/*
-	 * Selects the correct database entry
-	 */
-	int dbSelect(std::string, int);
-	/*
 	 * Creates a new flashcard set
 	 */
-	void createSet(std::string);
+	int createSet(std::string);
+	/*
+	 *
+	 */
+	int deleteSet(std::string);
+	/*
+	 *
+	 */
+	int addFlashcard(std::string, std::string);
+	/*
+	 *
+	 */
+	int deleteFlashcard(std::string);
+	/*
+	 *
+	 */
+	int editWord(std::string, std::string);
+	/*
+	 *
+	 */
+	int editDefinition(std::string, std::string);
 	/*
 	 * Displays a list of all flashcard sets
 	 */
@@ -40,7 +59,11 @@ public:
 	/*
 	 * Displays the contents of a flashcard set
 	 */
-	void displaySet(std::string);
+	int displaySet(std::string);
+
+	void setStateID(int);
+
+	int getStateID();
 
 	/* Delete copy constructor and assignment operator */
 	DBManager(const DBManager&) = delete;

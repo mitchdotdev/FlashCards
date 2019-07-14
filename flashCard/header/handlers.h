@@ -16,6 +16,8 @@ void mainMenu();
 
 void setMenu();
 
+void cardMenu();
+
 int menuInput(int menuChoices);
 
 void clearScreen();

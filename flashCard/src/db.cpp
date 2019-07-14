@@ -2,6 +2,9 @@
 
 // Constructor
 DBManager::DBManager() {
+	// Initialize stateID
+	this->stateID = 1;
+
 	// If database successfully opens, create base tables
 	if(openDatabase())
 		createTables();
@@ -54,51 +57,63 @@ bool DBManager::createTables() {
 	return success;
 }
 
-int DBManager::dbSelect(std::string query, int choice) {
-	query = query + std::to_string(choice);
-
-    sqlite3_stmt *stmt;
-    int result;
-
-    int rc = sqlite3_prepare_v2(database, query.c_str(), -1, &stmt, NULL);
-    if (rc != SQLITE_OK) {
-        printf("error: %s\n", sqlite3_errmsg(database));
-        // or throw an exception
-        return -1;
-    }
-
-    rc = sqlite3_step(stmt);
-    if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
-        printf("error: %s\n", sqlite3_errmsg(database));
-        // or throw an exception
-        sqlite3_finalize(stmt);
-        return -1;
-    }
-
-    if (rc == SQLITE_DONE) // no result
-        result = -1;
-    else if (sqlite3_column_type(stmt, 0) == SQLITE_NULL) // result is NULL
-        result = -1;
-    else { // some valid result
-        result = sqlite3_column_int(stmt, 0);
-    }
-
-    sqlite3_finalize(stmt);
-
-    return result;
-}
-
-void DBManager::createSet(std::string setName) {
+int DBManager::createSet(std::string setName) {
 	// Construct query
 	std::string query = "INSERT INTO `Set_Manager` (`Name`) "
 						"VALUES (\'" + setName + "\')";
 
 	// Execute query
-	sqlite3_exec(database, query.c_str(), NULL, NULL, NULL);
+	return sqlite3_exec(database, query.c_str(), NULL, NULL, NULL);
+}
+
+int DBManager::deleteSet(std::string id) {
+	// Construct query
+	std::string query = "DELETE FROM `Set_Manager` "
+						"WHERE `ID` = " + id;
+
+	// Execute query
+	return sqlite3_exec(database, query.c_str(), NULL, NULL, NULL);
+}
+
+int DBManager::addFlashcard(std::string word, std::string definition) {
+	// Construct query
+	std::string query = "INSERT INTO `Sets` (`word`, `definition`, `setID`) "
+						"VALUES (\'" + word + "\', \'" + definition + "\', " + std::to_string(this->stateID) + ") ";
+
+	// Execute query
+	return sqlite3_exec(database, query.c_str(), NULL, NULL, NULL);
+}
+
+int DBManager::deleteFlashcard(std::string word) {
+	// Construct query
+	std::string query = "DELETE FROM `Sets` "
+						"WHERE `word` = \'" + word + "\'";
+
+	// Execute query
+	return sqlite3_exec(database, query.c_str(), NULL, NULL, NULL);
+}
+
+int DBManager::editWord(std::string oldWord, std::string newWord) {
+	// Construct query
+	std::string query = "UPDATE `Sets` "
+						"SET `word` = \'" + newWord + "\' "
+						"WHERE `word` = \'" + oldWord + "\' AND `setID` = " + std::to_string(this->getStateID());
+
+	// Execute query
+	return sqlite3_exec(database, query.c_str(), NULL, NULL, NULL);
+}
+
+int DBManager::editDefinition(std::string word, std::string newDefinition) {
+	// Construct query
+	std::string query = "UPDATE `Sets` "
+						"SET `definition` = \'" + newDefinition + "\' "
+						"WHERE `word` = \'" + word + "\' AND `setID` = " + std::to_string(this->getStateID());
+
+	// Execute query
+	return sqlite3_exec(database, query.c_str(), NULL, NULL, NULL);
 }
 
 int DBManager::setManagerCallback(void* data, int argc, char** argv, char** colName) {
-
 	for(int i = 0; i < argc; ++i)
 		std::cout << std::setw(6) << std::left << (argv[i] ? argv[i] : "NULL");
 
@@ -107,7 +122,6 @@ int DBManager::setManagerCallback(void* data, int argc, char** argv, char** colN
 }
 
 int DBManager::setCallback(void* data, int argc, char** argv, char** colName) {
-
 	for(int i = 0; i < argc; ++i)
 		std::cout << std::setw(12) << std::left << (argv[i] ? argv[i] : "NULL");
 
@@ -116,20 +130,30 @@ int DBManager::setCallback(void* data, int argc, char** argv, char** colName) {
 }
 
 void DBManager::displayAllSets() {
+	std::cout << std::setw(7) << std::left << "\nID" << "Set Name\n______________\n";
+
 	std::string query = "SELECT * FROM `Set_Manager` ORDER BY `ID`";
 
 	/* Execute query and display results via callback function */
-	std::cout << std::setw(7) << std::left << "\nID" << "Set Name\n______________\n";
 	sqlite3_exec(database, query.c_str(), setManagerCallback, NULL, NULL);
 
 }
 
-void DBManager::displaySet(std::string choice) {
+int DBManager::displaySet(std::string choice) {
+	std::cout << std::setw(13) << std::left << "\nWord" << "Definition\n________________________\n";
+
 	std::string query = "SELECT `word`, `definition` FROM `Sets` WHERE `setID` = " + choice + " ORDER BY `word`";
 
 	/* Execute query and display results via callback function */
-	std::cout << std::setw(13) << std::left << "\nWord" << "Definition\n________________________\n";
-	sqlite3_exec(database, query.c_str(), setCallback, NULL, NULL);
+	return sqlite3_exec(database, query.c_str(), setCallback, NULL, NULL);
+}
+
+void DBManager::setStateID(int state) {
+	this->stateID = state;
+}
+
+int DBManager::getStateID() {
+	return this->stateID;
 }
 
 DBManager& DBManager::instance() {
