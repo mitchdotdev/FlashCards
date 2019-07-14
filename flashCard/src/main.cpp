@@ -1,9 +1,8 @@
-#include "../header/main.h"
+#include "../header/handlers.h"
 
 int main() {
 
 	init();
-	menuController();
 
 	return 0;
 }

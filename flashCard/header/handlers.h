@@ -3,24 +3,21 @@
 #define SETS 0
 #define MAIN_MENU 3
 
-#include "db.h"
-#include "set.h"
+#include <sstream>
+#include <ios>
+#include <unistd.h>
+#include <term.h>
 
-/*
- * Outputs application title and initializes a single instance of the DBManager
- */
+#include "db.h"
+
 void init();
-/*
- * Outputs application menus and delegates user input
- */
-void menuController();
-/*
- * Error checks and validates user input
- */
-int menuInput(int);
-/*
- * Error checks and validates user input for the database and delegates queries
- */
-int dbInput(int);
+
+void mainMenu();
+
+void setMenu();
+
+int menuInput(int menuChoices);
+
+void clearScreen();
 
 #endif /* HANDLERS_H_ */

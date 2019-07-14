@@ -34,7 +34,7 @@ bool DBManager::createTables() {
 					   "PRIMARY KEY(`ID`) )";
 
 	// Creating table to hold the flashcards that reference the id of the set they belong to
-	std::string sql2 = "CREATE TABLE `Set` ("
+	std::string sql2 = "CREATE TABLE `Sets` ("
 					   "`word`	TEXT, "
 					   "`definition`	TEXT, "
 					   "`setID`	INTEGER, "
@@ -125,7 +125,7 @@ void DBManager::displayAllSets() {
 }
 
 void DBManager::displaySet(std::string choice) {
-	std::string query = "SELECT `word`, `definition` FROM `Set` WHERE `setID` = " + choice + " ORDER BY `word`";
+	std::string query = "SELECT `word`, `definition` FROM `Sets` WHERE `setID` = " + choice + " ORDER BY `word`";
 
 	/* Execute query and display results via callback function */
 	std::cout << std::setw(13) << std::left << "\nWord" << "Definition\n________________________\n";
