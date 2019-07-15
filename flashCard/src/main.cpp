@@ -1,8 +1,9 @@
-#include "../header/handlers.h"
+#include "../header/menus.h"
 
 int main() {
 
-	init();
+	DBManager::instance();
+	mainMenu();
 
 	return 0;
 }

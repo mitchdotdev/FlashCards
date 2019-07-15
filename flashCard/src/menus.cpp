@@ -1,20 +1,7 @@
-#include "../header/handlers.h"
-
-void init() {
-	// Instantiate database
-	DBManager::instance();
-
-	mainMenu();
-}
+#include "../header/menus.h"
 
 void mainMenu() {
-	std::cout << " _______  ___      _______  _______  __   __  _______  _______  ______    ______   _______ \n"
-				 "|       ||   |    |   _   ||       ||  | |  ||       ||   _   ||    _ |  |      | |       |\n"
-				 "|    ___||   |    |  |_|  ||  _____||  |_|  ||       ||  |_|  ||   | ||  |  _    ||  _____|\n"
-				 "|   |___ |   |    |       || |_____ |       ||       ||       ||   |_||_ | | |   || |_____ \n"
-				 "|    ___||   |___ |       ||_____  ||       ||      _||       ||    __  || |_|   ||_____  |\n"
-				 "|   |    |       ||   _   | _____| ||   _   ||     |_ |   _   ||   |  | ||       | _____| |\n"
-				 "|___|    |_______||__| |__||_______||__| |__||_______||__| |__||___|  |_||______| |_______|";
+	showTitle();
 	// Main menu
 	DBManager::instance().setStateID(0);
 	std::cout << "\n\n"
@@ -24,13 +11,14 @@ void mainMenu() {
 				 ": ";
 
 	switch (menuInput(3)) {
-	clearScreen();
+	//clearScreen();
 
 		case 0: {
 			std::exit(0);
 			break;
 		}
 		case 1: {
+			showTitle();
 			// View sets
 			DBManager::instance().displayAllSets();
 			setMenu();
@@ -45,12 +33,14 @@ void mainMenu() {
 			if ( DBManager::instance().createSet(setName) == 0 ) {
 				clearScreen();
 				std::cout << "SET ADDED!\n\n";
+				sleep(1);
 				mainMenu();
 			} else {
 				clearScreen();
 				std::cerr << ". . . ERROR OCCURRED . . .\n\n";
+				sleep(1);
+				mainMenu();
 			}
-			sleep(2);
 			break;
 		}
 	}
@@ -65,8 +55,6 @@ void setMenu() {
 				 ": ";
 
 	switch (menuInput(3)) {
-	clearScreen();
-
 		case 0: {
 			// Back
 			mainMenu();
@@ -75,39 +63,39 @@ void setMenu() {
 		case 1: {
 			// Edit set (set stateid)
 			std::string id;
-			std::cout << "\n\n"
+			std::cout << "\n"
 						 "Enter the set ID: ";
 			std::getline( std::cin, id );
+			showTitle();
 			if ( DBManager::instance().displaySet(id) == 0 ) {
 				DBManager::instance().setStateID(std::stoi(id));
 				cardMenu();
 			} else {
 				clearScreen();
 				std::cerr << ". . . ERROR OCCURRED . . .\n\n";
-				sleep(2);
+				sleep(1);
+				mainMenu();
 			}
-
 			break;
 		}
 
 		case 2: {
 			// Delete set (set stateid)
 			std::string id;
-			std::cout << "\n\n"
+			std::cout << "\n"
 						 "Enter the set ID: ";
 			std::getline( std::cin, id );
 			if ( DBManager::instance().deleteSet(id) == 0 ) {
 				clearScreen();
 				std::cout << "SET DELETED!\n\n";
-				sleep(2);
-				clearScreen();
-				setMenu();
+				sleep(1);
+				mainMenu();
 			} else {
 				clearScreen();
 				std::cerr << ". . . ERROR OCCURRED . . .\n\n";
-				sleep(2);
+				sleep(1);
+				mainMenu();
 			}
-
 			break;
 		}
 	}
@@ -124,10 +112,11 @@ void cardMenu() {
 				 ": ";
 
 	switch (menuInput(5)) {
-	clearScreen();
 
 		case 0: {
 			// Back
+			showTitle();
+			DBManager::instance().displayAllSets();
 			setMenu();
 			break;
 		}
@@ -144,15 +133,17 @@ void cardMenu() {
 			if ( DBManager::instance().addFlashcard(newWord, newDefinition) == 0 ) {
 				clearScreen();
 				std::cout << "CARD ADDED!\n\n";
-				sleep(2);
-				clearScreen();
+				sleep(1);
+				showTitle();
 				DBManager::instance().displaySet(std::to_string(DBManager::instance().getStateID()));
 				cardMenu();
 			} else {
 				clearScreen();
 				std::cerr << ". . . ERROR OCCURRED . . .\n\n";
+				sleep(1);
+				DBManager::instance().displaySet(std::to_string(DBManager::instance().getStateID()));
+				cardMenu();
 			}
-			sleep(2);
 			break;
 		}
 
@@ -164,22 +155,24 @@ void cardMenu() {
 			std::cout << "\n\n"
 						 "Enter the word of the flashcard to edit: ";
 			std::getline( std::cin, oldWord );
-			std::cout << "\n\n"
-						 "Enter the new word for the flashcard: ";
+			std::cout << "Enter the new word for the flashcard: ";
 			std::getline( std::cin, newWord );
 
 			if ( DBManager::instance().editWord(oldWord, newWord) == 0 ) {
 				clearScreen();
 				std::cout << "CARD EDITED!\n\n";
-				sleep(2);
-				clearScreen();
+				sleep(1);
+				showTitle();
 				DBManager::instance().displaySet(std::to_string(DBManager::instance().getStateID()));
 				cardMenu();
 			} else {
 				clearScreen();
 				std::cerr << ". . . ERROR OCCURRED . . .\n\n";
+				sleep(1);
+				showTitle();
+				DBManager::instance().displaySet(std::to_string(DBManager::instance().getStateID()));
+				cardMenu();
 			}
-			sleep(2);
 			break;
 		}
 
@@ -191,22 +184,24 @@ void cardMenu() {
 			std::cout << "\n\n"
 						 "Enter the word of the flashcard to edit: ";
 			std::getline( std::cin, word );
-			std::cout << "\n\n"
-						 "Enter the new definition for the flashcard: ";
+			std::cout << "Enter the new definition for the flashcard: ";
 			std::getline( std::cin, newDefinition );
 
 			if ( DBManager::instance().editDefinition(word, newDefinition) == 0 ) {
 				clearScreen();
 				std::cout << "CARD EDITED!\n\n";
-				sleep(2);
-				clearScreen();
+				sleep(1);
+				showTitle();
 				DBManager::instance().displaySet(std::to_string(DBManager::instance().getStateID()));
 				cardMenu();
 			} else {
 				clearScreen();
 				std::cerr << ". . . ERROR OCCURRED . . .\n\n";
+				sleep(1);
+				showTitle();
+				DBManager::instance().displaySet(std::to_string(DBManager::instance().getStateID()));
+				cardMenu();
 			}
-			sleep(2);
 			break;
 		}
 
@@ -221,14 +216,18 @@ void cardMenu() {
 			if ( DBManager::instance().deleteFlashcard(word) == 0 ) {
 				clearScreen();
 				std::cout << "CARD DELETED!\n\n";
-				sleep(2);
-				clearScreen();
-				setMenu();
+				sleep(1);
+				showTitle();
+				DBManager::instance().displaySet(std::to_string(DBManager::instance().getStateID()));
+				cardMenu();
 			} else {
 				clearScreen();
 				std::cerr << ". . . ERROR OCCURRED . . .\n\n";
+				sleep(1);
+				showTitle();
+				DBManager::instance().displaySet(std::to_string(DBManager::instance().getStateID()));
+				cardMenu();
 			}
-			sleep(2);
 			break;
 		}
 	}
@@ -257,4 +256,15 @@ void clearScreen() {
 	    if (result <= 0) return;
 	 }
 	  putp( tigetstr( "clear" ) );
+}
+
+void showTitle() {
+	clearScreen();
+	std::cout << " _______  ___      _______  _______  __   __  _______  _______  ______    ______   _______ \n"
+				 "|       ||   |    |   _   ||       ||  | |  ||       ||   _   ||    _ |  |      | |       |\n"
+				 "|    ___||   |    |  |_|  ||  _____||  |_|  ||       ||  |_|  ||   | ||  |  _    ||  _____|\n"
+				 "|   |___ |   |    |       || |_____ |       ||       ||       ||   |_||_ | | |   || |_____ \n"
+				 "|    ___||   |___ |       ||_____  ||       ||      _||       ||    __  || |_|   ||_____  |\n"
+				 "|   |    |       ||   _   | _____| ||   _   ||     |_ |   _   ||   |  | ||       | _____| |\n"
+				 "|___|    |_______||__| |__||_______||__| |__||_______||__| |__||___|  |_||______| |_______|";
 }

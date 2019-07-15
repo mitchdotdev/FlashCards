@@ -1,6 +1,5 @@
  #include "../header/db.h"
 
-// Constructor
 DBManager::DBManager() {
 	// Initialize stateID
 	this->stateID = 1;
@@ -10,7 +9,6 @@ DBManager::DBManager() {
 		createTables();
 }
 
-// Destructor
 DBManager::~DBManager() { sqlite3_close(database); }
 
 bool DBManager::openDatabase() {
