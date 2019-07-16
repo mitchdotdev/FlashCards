@@ -2,11 +2,11 @@
 
 DBManager::DBManager() {
 	// Initialize stateID
-	this->stateID = 1;
+	this->stateID = 0;
 
 	// If database successfully opens, create base tables
 	if(openDatabase())
-		createTables();
+        createTables(); 
 }
 
 DBManager::~DBManager() { sqlite3_close(database); }
@@ -30,9 +30,8 @@ bool DBManager::createTables() {
 
 	// Creating table to hold the name and id of all of the sets of flashcards
 	std::string sql1 = "CREATE TABLE `Set_Manager` ("
-					   "`ID`	INTEGER AUTOINCREMENT, "
-					   "`Name`	TEXT UNIQUE, "
-					   "PRIMARY KEY(`ID`) )";
+					   "`ID`	INTEGER PRIMARY KEY AUTOINCREMENT, "
+					   "`Name`	TEXT UNIQUE )";
 
 	// Creating table to hold the flashcards that reference the id of the set they belong to
 	std::string sql2 = "CREATE TABLE `Sets` ("
